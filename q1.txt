@@ -1,0 +1,21 @@
+ #create a jquery app using bootstrap there will be a cl=oloumn country name in which list of saved country will be shown and a button to save country will be shown. #if country exists in the database then give msg country_name selected if country not in the database give msg country_name saved to database.
+
+ Q.2 create a react app to make curd operations on user 
+The user has following details
+FirstName String
+LasttName String
+Email String
+The client must be able to list, create, edit, and delete users
+
+Q.3 Create 2 html forms(NodeJS,Express)
+  a) Create a form to take input of Productid, ProductName, And Price.(/form route).
+All field are compulsory. Add appropriate validation
+b)   Create a second form, for submit(/submit route).
+When the form is submitted, the date is send to the (/submit route), when it is logged to the console   and a success message is return to the client.
+
+//Question 3.
+    <h1>Create 2 html forms :</h1>
+    <h1>A) craete form  to take input of UserID,UserName, and  designation (/form route).
+      all fields  are compulsory add aprroprite validation .
+      B) create a second form for submit (/submit route) .
+        when the form is submitted the data is sent to the (/submit route),where it is logged to the console and a success message is returned to the client
