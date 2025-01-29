@@ -1,0 +1,380 @@
+create userrlist web app (use css/boostrap)
+a) create add user component using react
+b) create user list component using reac(use table)
+field: username,gender,date of birth 
+(React)
+npm install bootstrap
+import 'bootstrap/dist/css/bootstrap.min.css';(add bootstrap css to your index.js or app .js)
+
+ans-
+app.js file
+import React, { useState } from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+const App = () => {
+  const [users, setUsers] = useState([]);
+  const [username, setUsername] = useState("");
+  const [gender, setGender] = useState("");
+  const [dob, setDob] = useState("");
+
+  // Function to add a user to the list
+  const addUser = (e) => {
+    e.preventDefault();
+    if (username && gender && dob) {
+      const newUser = { username, gender, dob };
+      setUsers([...users, newUser]);
+      setUsername("");
+      setGender("");
+      setDob("");
+    }
+  };
+
+  return (
+    <div className="container mt-4">
+      <h2>User Management App</h2>
+
+      {/* Add User Form */}
+      <div className="mb-4">
+        <h4>Add User</h4>
+        <form onSubmit={addUser}>
+          <div className="mb-3">
+            <label htmlFor="username" className="form-label">Username</label>
+            <input
+              type="text"
+              id="username"
+              className="form-control"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="gender" className="form-label">Gender</label>
+            <select
+              id="gender"
+              className="form-select"
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+            >
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="dob" className="form-label">Date of Birth</label>
+            <input
+              type="date"
+              id="dob"
+              className="form-control"
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
+            />
+          </div>
+          <button type="submit" className="btn btn-primary">Add User</button>
+        </form>
+      </div>
+
+      {/* User List Table */}
+      <div>
+        <h4>User List</h4>
+        <table className="table table-bordered">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Gender</th>
+              <th>Date of Birth</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.length === 0 ? (
+              <tr>
+                <td colSpan="3" className="text-center">No users added</td>
+              </tr>
+            ) : (
+              users.map((user, index) => (
+                <tr key={index}>
+                  <td>{user.username}</td>
+                  <td>{user.gender}</td>
+                  <td>{user.dob}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default App;
+---------
+app.css (optional)
+/* Add custom styling if needed */
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+h2, h4 {
+  text-align: center;
+}
+
+.container {
+  max-width: 800px;
+  margin-top: 20px;
+}
+--------------------------
+Q2.create following restapi for user list web application of question.
+1.use arrays to store data 
+post/new - add user
+post/list - all user list
+put/edit - to edit user
+delete- to remove user
+(you can use expressjs or nodejs to create rest api)
+
+ans-
+app.js
+
+const express = require('express');
+const bodyParser = require('body-parser');
+
+const app = express();
+const port = 3000;
+
+// Middleware to parse incoming request bodies
+app.use(bodyParser.json());
+
+// In-memory array to store user data
+let users = [];
+
+// POST /new - Add a new user
+app.post('/new', (req, res) => {
+  const { username, gender, dob } = req.body;
+  if (!username || !gender || !dob) {
+    return res.status(400).json({ error: 'All fields (username, gender, dob) are required.' });
+  }
+  
+  const newUser = {
+    id: users.length + 1, // simple id based on array length
+    username,
+    gender,
+    dob
+  };
+
+  users.push(newUser);
+  res.status(201).json({ message: 'User added successfully', user: newUser });
+});
+
+// POST /list - Get all users
+app.post('/list', (req, res) => {
+  if (users.length === 0) {
+    return res.status(200).json({ message: 'No users found', users: [] });
+  }
+  res.status(200).json({ users });
+});
+
+// PUT /edit - Edit an existing user
+app.put('/edit', (req, res) => {
+  const { id, username, gender, dob } = req.body;
+
+  // Find user by ID
+  const userIndex = users.findIndex(user => user.id === id);
+  if (userIndex === -1) {
+    return res.status(404).json({ error: 'User not found.' });
+  }
+
+  // Update the user details
+  users[userIndex] = { id, username, gender, dob };
+  res.status(200).json({ message: 'User updated successfully', user: users[userIndex] });
+});
+
+// DELETE /remove - Remove a user
+app.delete('/remove', (req, res) => {
+  const { id } = req.body;
+
+  // Find user by ID and remove
+  const userIndex = users.findIndex(user => user.id === id);
+  if (userIndex === -1) {
+    return res.status(404).json({ error: 'User not found.' });
+  }
+
+  const removedUser = users.splice(userIndex, 1);
+  res.status(200).json({ message: 'User removed successfully', user: removedUser });
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
+
+----------------------------------------------------
+Q3.write a book app in jquery/js and follow below option
+field :bookname,author,publishing date,price ,language (use checkbox)
+a) show book detail in table on buttton click
+b) book name must be atleast 3 characters
+c) price must be greater than 200
+d) atleast two language must be sleected
+
+ans-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book App</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        .form-group input[type="checkbox"] {
+            width: auto;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Book Entry Form</h2>
+        <div class="form-group">
+            <label for="bookname">Book Name:</label>
+            <input type="text" id="bookname" placeholder="Enter Book Name">
+            <span id="booknameError" class="error"></span>
+        </div>
+        <div class="form-group">
+            <label for="author">Author:</label>
+            <input type="text" id="author" placeholder="Enter Author Name">
+        </div>
+        <div class="form-group">
+            <label for="publishing_date">Publishing Date:</label>
+            <input type="date" id="publishing_date">
+        </div>
+        <div class="form-group">
+            <label for="price">Price (greater than 200):</label>
+            <input type="number" id="price" placeholder="Enter Price">
+            <span id="priceError" class="error"></span>
+        </div>
+        <div class="form-group">
+            <label for="languages">Select Languages (At least two):</label><br>
+            <input type="checkbox" id="english" value="English"> English
+            <input type="checkbox" id="french" value="French"> French
+            <input type="checkbox" id="spanish" value="Spanish"> Spanish
+            <input type="checkbox" id="german" value="German"> German
+            <span id="languagesError" class="error"></span>
+        </div>
+        <button id="addBookButton">Add Book</button>
+
+        <h2>Book List</h2>
+        <table id="bookListTable" style="display:none;">
+            <thead>
+                <tr>
+                    <th>Book Name</th>
+                    <th>Author</th>
+                    <th>Publishing Date</th>
+                    <th>Price</th>
+                    <th>Languages</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Function to validate and add the book
+            $('#addBookButton').click(function() {
+                var bookName = $('#bookname').val();
+                var author = $('#author').val();
+                var publishingDate = $('#publishing_date').val();
+                var price = $('#price').val();
+                var languages = [];
+
+                // Check if at least two languages are selected
+                $('input[type="checkbox"]:checked').each(function() {
+                    languages.push($(this).val());
+                });
+
+                var isValid = true;
+
+                // Clear previous errors
+                $('.error').text('');
+
+                // Validate Book Name
+                if (bookName.length < 3) {
+                    $('#booknameError').text('Book name must be at least 3 characters.');
+                    isValid = false;
+                }
+
+                // Validate Price
+                if (price < 200) {
+                    $('#priceError').text('Price must be greater than 200.');
+                    isValid = false;
+                }
+
+                // Validate Languages
+                if (languages.length < 2) {
+                    $('#languagesError').text('At least two languages must be selected.');
+                    isValid = false;
+                }
+
+                // If all validations pass, add the book to the table
+                if (isValid) {
+                    var row = `<tr>
+                                <td>${bookName}</td>
+                                <td>${author}</td>
+                                <td>${publishingDate}</td>
+                                <td>${price}</td>
+                                <td>${languages.join(', ')}</td>
+                               </tr>`;
+
+                    $('#bookListTable tbody').append(row);
+                    $('#bookListTable').show();
+                    
+                    // Clear form inputs after adding the book
+                    $('#bookname').val('');
+                    $('#author').val('');
+                    $('#publishing_date').val('');
+                    $('#price').val('');
+                    $('input[type="checkbox"]').prop('checked', false);
+                }
+            });
+        });
+    </script>
+    
+</body>
+</html>
+
+
